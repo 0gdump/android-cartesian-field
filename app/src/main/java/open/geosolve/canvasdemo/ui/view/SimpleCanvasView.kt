@@ -7,13 +7,17 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import open.geosolve.canvasdemo.model.Point
+import kotlin.math.roundToInt
 
 open class SimpleCanvasView : View {
 
-    companion object {
-        private const val POINT_RADIUS: Float = 20f
-        private const val GRID_STEP = 120
-    }
+    private var scale = 1.0f
+
+    private val gridStep
+        get() = 120 * scale
+
+    private val pointRadius
+        get() = 20 * scale
 
     private val paintPoint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
@@ -21,7 +25,7 @@ open class SimpleCanvasView : View {
 
     private val paintXY = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
-        strokeWidth = 5f
+        strokeWidth = 5 * scale
     }
 
     private val paintGrid = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -29,7 +33,7 @@ open class SimpleCanvasView : View {
     }
 
     private val paintText = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 42f
+        textSize = 42 * scale
     }
 
     constructor(context: Context) : this(context, null)
@@ -44,6 +48,11 @@ open class SimpleCanvasView : View {
 
     fun attachPoint(point: Point?) {
         attachedPoint = point
+    }
+
+    fun updateScale(scale: Float) {
+        this.scale = scale
+        invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -61,10 +70,10 @@ open class SimpleCanvasView : View {
             val width = canvas.width.toFloat()
             val height = canvas.height.toFloat()
 
-            val x = width / 2f + GRID_STEP * attachedPoint!!.x
-            val y = height / 2f - GRID_STEP * attachedPoint!!.y
+            val x = width / 2f + gridStep * attachedPoint!!.x
+            val y = height / 2f - gridStep * attachedPoint!!.y
 
-            canvas.drawCircle(x, y, POINT_RADIUS, paintPoint)
+            canvas.drawCircle(x, y, pointRadius, paintPoint)
         }
     }
 
@@ -79,7 +88,7 @@ open class SimpleCanvasView : View {
         val height = canvas.height.toFloat()
 
         val cx = width / 2f
-        var cxOffset = GRID_STEP
+        var cxOffset = gridStep
 
         canvas.drawLine(
             cx,
@@ -110,7 +119,7 @@ open class SimpleCanvasView : View {
             )
 
             // Step
-            cxOffset += GRID_STEP
+            cxOffset += gridStep
             if (cx + cxOffset > width || cx - cxOffset < 0) break
         }
     }
@@ -121,7 +130,7 @@ open class SimpleCanvasView : View {
         val height = canvas.height.toFloat()
 
         val cy = height / 2
-        var cyOffset = GRID_STEP
+        var cyOffset = gridStep
 
         canvas.drawLine(
             0f,
@@ -152,39 +161,48 @@ open class SimpleCanvasView : View {
             )
 
             // Step
-            cyOffset += GRID_STEP
+            cyOffset += gridStep
             if (cy + cyOffset > height || cy - cyOffset < 0) break
         }
     }
 
     private fun drawText(canvas: Canvas) {
 
+        if (scale < 0.6f) return
+
         val cy = canvas.height / 2f
         val cx = canvas.width / 2f
 
-        var cxOffset = 0
+        canvas.drawText(
+            "0",
+            cx + 20,
+            cy + 40,
+            paintText
+        )
+
+        var cxOffset = gridStep
         while (true) {
             canvas.drawText(
-                (cxOffset / GRID_STEP).toString(),
+                (cxOffset / gridStep).roundToInt().toString(),
                 cx + cxOffset + 5,
                 cy + 40,
                 paintText
             )
 
-            cxOffset += GRID_STEP
+            cxOffset += gridStep
             if (cx + cxOffset > width || cx - cxOffset < 0) break
         }
 
-        var cyOffset = GRID_STEP
+        var cyOffset = gridStep
         while (true) {
             canvas.drawText(
-                (cyOffset / GRID_STEP).toString(),
+                (cyOffset / gridStep).roundToInt().toString(),
                 cx - 30,
                 cy - cyOffset,
                 paintText
             )
 
-            cyOffset += GRID_STEP
+            cyOffset += gridStep
             if (cy + cyOffset > height || cy - cyOffset < 0) break
         }
     }
