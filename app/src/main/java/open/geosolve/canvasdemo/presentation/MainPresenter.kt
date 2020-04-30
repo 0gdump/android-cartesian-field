@@ -1,17 +1,14 @@
 package open.geosolve.canvasdemo.presentation
 
 import moxy.MvpPresenter
-import open.geosolve.canvasdemo.model.Point
+import open.geosolve.geosolve.repository.model.Figure
 
 class MainPresenter : MvpPresenter<MainView>() {
 
-    private val point = Point().apply {
-        x = 2f
-        y = 3f
-    }
+    private val figure = Figure()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.attachPoint(point)
+        viewState.attach(figure)
     }
 }

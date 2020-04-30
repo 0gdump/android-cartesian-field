@@ -6,7 +6,10 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import open.geosolve.canvasdemo.model.Point
+import androidx.core.content.ContextCompat
+import open.geosolve.canvasdemo.R
+import open.geosolve.canvasdemo.model.Node
+import open.geosolve.geosolve.repository.model.Figure
 import kotlin.math.roundToInt
 
 open class SimpleCanvasView : View {
@@ -19,9 +22,8 @@ open class SimpleCanvasView : View {
     private val pointRadius
         get() = 20 * scale
 
-    private val paintPoint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.BLACK
-    }
+    private val lineThickness
+        get() = 1 * scale
 
     private val paintXY = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
@@ -36,6 +38,21 @@ open class SimpleCanvasView : View {
         textSize = 42 * scale
     }
 
+    private val mPaintNode = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, R.color.color_node)
+        strokeWidth = pointRadius
+    }
+
+    private val mPaintLine = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, R.color.color_line)
+        strokeWidth = lineThickness
+    }
+
+    private val mPaintAngle = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, R.color.color_angle)
+        textSize = lineThickness
+    }
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -44,10 +61,10 @@ open class SimpleCanvasView : View {
         defStyleAttr
     )
 
-    private var attachedPoint: Point? = null
+    private var attachedFigure: Figure? = null
 
-    fun attachPoint(point: Point?) {
-        attachedPoint = point
+    fun attach(figure: Figure?) {
+        attachedFigure = figure
     }
 
     fun updateScale(scale: Float) {
@@ -59,22 +76,57 @@ open class SimpleCanvasView : View {
         super.onDraw(canvas)
 
         drawGrid(canvas)
-        drawPoint(canvas)
+        drawFigure(canvas)
         drawText(canvas)
     }
 
-    private fun drawPoint(canvas: Canvas) {
-        if (attachedPoint == null) {
+    private fun drawFigure(canvas: Canvas) {
+        if (attachedFigure == null) {
             canvas.drawColor(Color.WHITE)
-        } else {
-            val width = canvas.width.toFloat()
-            val height = canvas.height.toFloat()
-
-            val x = width / 2f + gridStep * attachedPoint!!.x
-            val y = height / 2f - gridStep * attachedPoint!!.y
-
-            canvas.drawCircle(x, y, pointRadius, paintPoint)
+            return
         }
+
+        drawLines(canvas)
+        drawNodes(canvas)
+    }
+
+    private fun drawLines(canvas: Canvas) {
+        if (attachedFigure == null) return
+
+        for (line in attachedFigure!!.lines) {
+            canvas.drawLine(
+                line.startNode.x, line.startNode.y,
+                line.finalNode.x, line.finalNode.y,
+                mPaintLine
+            )
+        }
+    }
+
+    private fun drawNodes(canvas: Canvas) {
+        if (attachedFigure == null) return
+
+        attachedFigure!!.nodes.forEach { node ->
+            drawNode(canvas, node)
+            drawAngleDecoration(canvas, node)
+        }
+    }
+
+    private fun drawNode(canvas: Canvas, node: Node) {
+        canvas.drawCircle(node.x, node.y, pointRadius, mPaintNode)
+    }
+
+    // TODO Рисовать дугу угла
+    // TODO Рисовать внешний угол
+    // TODO Подстраивать положение текста, чтобы не наезжал на линии
+    private fun drawAngleDecoration(canvas: Canvas, node: Node) {
+        if (node.innerAngle == null) return
+
+        canvas.drawText(
+            node.innerAngle.toString(),
+            node.x + 50,
+            node.y + 50,
+            mPaintAngle
+        )
     }
 
     private fun drawGrid(canvas: Canvas) {

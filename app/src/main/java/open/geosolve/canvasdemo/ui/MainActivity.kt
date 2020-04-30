@@ -6,9 +6,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import open.geosolve.canvasdemo.R
-import open.geosolve.canvasdemo.model.Point
 import open.geosolve.canvasdemo.presentation.MainPresenter
 import open.geosolve.canvasdemo.presentation.MainView
+import open.geosolve.geosolve.repository.model.Figure
 
 class MainActivity : MvpAppCompatActivity(), MainView {
 
@@ -54,7 +54,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
     }
 
-    override fun attachPoint(point: Point) {
-        canvas.attachPoint(point)
+    override fun attach(figure: Figure) {
+        canvas.attach(figure)
     }
 }
