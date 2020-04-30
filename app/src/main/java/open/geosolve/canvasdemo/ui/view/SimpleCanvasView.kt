@@ -14,15 +14,16 @@ import kotlin.math.roundToInt
 
 open class SimpleCanvasView : View {
 
-    private var scale = 1.0f
+    var scale = 1.0f
+        private set
 
-    private val gridStep
+    val gridStep
         get() = 120 * scale
 
-    private val pointRadius
+    val pointRadius
         get() = 20 * scale
 
-    private val lineThickness
+    val lineThickness
         get() = 1 * scale
 
     private val paintXY = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -61,7 +62,7 @@ open class SimpleCanvasView : View {
         defStyleAttr
     )
 
-    private var attachedFigure: Figure? = null
+    protected var attachedFigure: Figure? = null
 
     fun attach(figure: Figure?) {
         attachedFigure = figure
@@ -112,7 +113,14 @@ open class SimpleCanvasView : View {
     }
 
     private fun drawNode(canvas: Canvas, node: Node) {
-        canvas.drawCircle(node.x, node.y, pointRadius, mPaintNode)
+
+        val width = canvas.width.toFloat()
+        val height = canvas.height.toFloat()
+
+        val x = width / 2f + gridStep * node.x
+        val y = height / 2f - gridStep * node.y
+
+        canvas.drawCircle(x, y, pointRadius, mPaintNode)
     }
 
     // TODO Рисовать дугу угла

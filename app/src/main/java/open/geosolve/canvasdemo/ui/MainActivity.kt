@@ -30,6 +30,10 @@ class MainActivity : MvpAppCompatActivity(), MainView {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+
+        canvas.onTouchUp = { x, y -> presenter.onTouchUp(x, y) }
+        canvas.onTouchDown = { x, y -> presenter.onTouchDown(x, y) }
+        canvas.onTouchMove = { x, y -> presenter.onTouchMove(x, y) }
     }
 
     private fun updateScaleFromSeekbar(progress: Float) {
