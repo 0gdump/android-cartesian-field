@@ -3,6 +3,7 @@ package open.geosolve.canvasdemo.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import kotlin.math.abs
 
 class EditableCanvasView : SimpleCanvasView {
 
@@ -26,8 +27,8 @@ class EditableCanvasView : SimpleCanvasView {
         val cx = width / 2
         val cy = height / 2
 
-        val mx = (event.x - cx) / gridStep
-        val my = (cy - event.y) / gridStep
+        val mx = roundCoordinate((event.x - cx) / gridStep)
+        val my = roundCoordinate((cy - event.y) / gridStep)
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> onTouchDown?.invoke(mx, my)
@@ -37,5 +38,29 @@ class EditableCanvasView : SimpleCanvasView {
 
         invalidate()
         return true
+    }
+
+    private fun roundCoordinate(coordinate: Float): Float {
+
+        val decimalPart = abs(coordinate % 1)
+
+        return when {
+            decimalPart < 0.20f -> {
+                if (coordinate > 0) {
+                    coordinate - decimalPart
+                } else {
+                    coordinate + decimalPart
+                }
+            }
+            decimalPart > 0.80f -> {
+                if (coordinate > 0) {
+                    coordinate + (1f - decimalPart)
+                } else {
+                    coordinate - (1f - decimalPart)
+                }
+            }
+
+            else -> coordinate
+        }
     }
 }
