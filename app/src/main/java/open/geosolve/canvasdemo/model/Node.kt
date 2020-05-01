@@ -32,9 +32,9 @@ class Node(
     }
 
     fun inRadius(x: Float, y: Float): Boolean {
-        val xBool = this.x - 25 < x && x < this.x + 25
+        val xBool = this.x - 0.05f < x && x < this.x + 0.05f
 
-        val yBool = this.y - 25 < y && y < this.y + 25
+        val yBool = this.y - 0.05f < y && y < this.y + 0.05f
 
         return xBool && yBool
     }
