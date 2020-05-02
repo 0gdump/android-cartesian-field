@@ -9,6 +9,7 @@ import open.geosolve.geosolve.repository.model.Figure
 class MainPresenter : MvpPresenter<MainView>() {
 
     private val figure = Figure()
+    private var movedNode: Node? = null
 
     private var mode = Mode.ADD_MOVE_FIN
     private var state = State.ON_CANVAS
@@ -19,23 +20,58 @@ class MainPresenter : MvpPresenter<MainView>() {
         viewState.attach(figure)
     }
 
-    fun onTouchDown(touchX: Float, touchY: Float) {
-        for (node in figure.nodes) {
-            if (node.inRadius(touchX, touchY)) {
-                node.isMove = true
-                state = State.ON_POINT
-                break
-            }
+    fun isUsed(x: Float, y: Float): Boolean {
+        figure.nodes.forEach { node ->
+            if (node.inRadius(x, y)) return true
         }
+
+        return false
     }
 
-    fun onTouchMove(touchX: Float, touchY: Float) {
-        for (node in figure.nodes) {
-            if (node.isMove) {
-                node.moveNode(touchX, touchY)
+
+    fun onMoveStart(x: Float, y: Float) {
+        figure.nodes.forEach { node ->
+            if (!node.inRadius(x, y)) return
+            movedNode = node
+        }
+
+        throw RuntimeException("WTF. Node not found")
+    }
+
+    fun onMove(x: Float, y: Float) {
+        movedNode?.moveNode(x, y)
+    }
+
+    fun onMoveFinished(x: Float, y: Float) {
+        movedNode = null
+    }
+
+    fun onTouch(x: Float, y: Float) {
+
+        var isCanvasTouch = true
+
+        figure.nodes.forEach { node ->
+            if (node.inRadius(x, y)) {
+                isCanvasTouch = false
+                return@forEach
             }
         }
-        numOfCall++
+
+        if (isCanvasTouch) {
+            figure.addNode(Node(x, y))
+
+            if (figure.nodes.size > 1) {
+                figure.addLine(
+                    figure.nodes[figure.nodes.size - 2],
+                    figure.nodes.last()
+                )
+            }
+        } else {
+            figure.addLine(
+                figure.nodes.first(),
+                figure.nodes.last()
+            )
+        }
     }
 
     // TODO Перетаскивание линии с прикреплёнными точками через обработку State.ON_LINE
