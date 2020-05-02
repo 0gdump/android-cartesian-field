@@ -32,8 +32,10 @@ class MainPresenter : MvpPresenter<MainView>() {
 
     fun onMoveStart(x: Float, y: Float) {
         figure.nodes.forEach { node ->
-            if (!node.inRadius(x, y)) return
-            movedNode = node
+            if (node.inRadius(x, y)) {
+                movedNode = node
+                return
+            }
         }
 
         throw RuntimeException("WTF. Node not found")

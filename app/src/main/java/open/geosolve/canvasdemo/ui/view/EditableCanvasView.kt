@@ -39,7 +39,7 @@ class EditableCanvasView : SimpleCanvasView {
 
                     if (!isMoved) {
                         isFigureMoved = callback?.isUsed(mx, my) ?: false
-                        callScrollStartCallback(mx, my)
+                        callScrollStartCallback(lastX, lastY)
                     } else {
                         callScrollCallback(mx, my)
                     }
