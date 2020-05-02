@@ -44,15 +44,15 @@ class EditableCanvasView : SimpleCanvasView {
                     }
 
                     savePosition(mx, my)
-
                     isMoved = true
                 }
             }
 
             MotionEvent.ACTION_UP -> {
-                when {
-                    isMoved && isFigureMoved -> callback?.onMoveFinished(mx, my)
-                    else -> callback?.onTouch(mx, my)
+                if (isMoved && isFigureMoved) {
+                    callback?.onMoveFinished(mx, my)
+                } else {
+                    callback?.onTouch(mx, my)
                 }
 
                 isMoved = false
