@@ -145,8 +145,8 @@ open class SimpleCanvasView : View {
     private fun getYOnScreen(): IntRange {
         val cellsPerHalf = (height / 2 / gridStep).roundToInt()
 
-        val minY = -cellsPerHalf + xOffset.roundToInt()
-        val maxY = cellsPerHalf + xOffset.roundToInt()
+        val minY = -cellsPerHalf + yOffset.roundToInt()
+        val maxY = cellsPerHalf + yOffset.roundToInt()
 
         return minY..maxY
     }
