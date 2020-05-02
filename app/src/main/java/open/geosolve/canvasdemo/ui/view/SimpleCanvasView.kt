@@ -51,11 +51,11 @@ open class SimpleCanvasView : View {
     private var showAxis = true
 
     private var minScaleForNotations = 0.5f
-    private var showZero = true
-    private var showPositiveX = true
-    private var showNegativeX = true
-    private var showPositiveY = true
-    private var showNegativeY = true
+    private var showZeroNotation = true
+    private var showPositiveXNotations = true
+    private var showNegativeXNotations = true
+    private var showPositiveYNotations = true
+    private var showNegativeYNotations = true
 
     //endregion
 
@@ -310,11 +310,9 @@ open class SimpleCanvasView : View {
 
         if (scale < minScaleForNotations) return
 
-        if (showZero) drawZero(canvas)
-        if (showPositiveX) drawPositiveX(canvas)
-        if (showNegativeX) drawNegativeX(canvas)
-        if (showPositiveY) drawPositiveY(canvas)
-        if (showNegativeY) drawNegativeY(canvas)
+        if (showZeroNotation) drawZero(canvas)
+        if (showPositiveXNotations || showNegativeXNotations) drawXNotations(canvas)
+        if (showPositiveYNotations || showNegativeYNotations) drawYNotations(canvas)
     }
 
     private fun drawZero(canvas: Canvas) {
@@ -329,75 +327,45 @@ open class SimpleCanvasView : View {
         )
     }
 
-    private fun drawPositiveX(canvas: Canvas) {
-        var x = 1f
-        while (isXonScreen(x)) {
+    private fun drawXNotations(canvas: Canvas) {
+        loop@ for (x in getXOnScreen()) {
+
+            when {
+                x < 0 && !showNegativeXNotations -> continue@loop
+                x > 0 && !showPositiveXNotations -> continue@loop
+                x == 0 -> continue@loop
+            }
 
             drawText(
-                t = x.toInt().toString(),
+                t = x.toString(),
                 c = canvas,
-                x = x,
+                x = x.toFloat(),
                 y = 0f,
                 p = paintNotations,
                 a = TextAnchor.TopLeft,
                 safetyZone = 12f
             )
-
-            x++
         }
     }
 
-    private fun drawNegativeX(canvas: Canvas) {
-        var x = -1f
-        while (isXonScreen(x)) {
+    private fun drawYNotations(canvas: Canvas) {
+        loop@ for (y in getYOnScreen()) {
+
+            when {
+                y < 0 && !showNegativeYNotations -> continue@loop
+                y > 0 && !showPositiveYNotations -> continue@loop
+                y == 0 -> continue@loop
+            }
 
             drawText(
-                t = x.toInt().toString(),
-                c = canvas,
-                x = x,
-                y = 0f,
-                p = paintNotations,
-                a = TextAnchor.TopLeft,
-                safetyZone = 12f
-            )
-
-            x--
-        }
-    }
-
-    private fun drawPositiveY(canvas: Canvas) {
-        var y = 1f
-        while (isYonScreen(y)) {
-
-            drawText(
-                t = y.toInt().toString(),
+                t = y.toString(),
                 c = canvas,
                 x = 0f,
-                y = y,
+                y = y.toFloat(),
                 p = paintNotations,
                 a = TextAnchor.TopLeft,
                 safetyZone = 12f
             )
-
-            y++
-        }
-    }
-
-    private fun drawNegativeY(canvas: Canvas) {
-        var y = -1f
-        while (isYonScreen(y)) {
-
-            drawText(
-                t = y.toInt().toString(),
-                c = canvas,
-                x = 0f,
-                y = y,
-                p = paintNotations,
-                a = TextAnchor.TopLeft,
-                safetyZone = 12f
-            )
-
-            y--
         }
     }
 
