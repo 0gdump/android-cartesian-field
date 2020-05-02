@@ -9,6 +9,7 @@ import open.geosolve.geosolve.repository.model.Figure
 class MainPresenter : MvpPresenter<MainView>() {
 
     private val figure = Figure()
+    private var figureClosed = false
     private var movedNode: Node? = null
 
     private var mode = Mode.ADD_MOVE_FIN
@@ -57,7 +58,7 @@ class MainPresenter : MvpPresenter<MainView>() {
             }
         }
 
-        if (isCanvasTouch) {
+        if (isCanvasTouch && !figureClosed) {
             figure.addNode(Node(x, y))
 
             if (figure.nodes.size > 1) {
@@ -67,42 +68,12 @@ class MainPresenter : MvpPresenter<MainView>() {
                 )
             }
         } else {
+            figureClosed = true
+
             figure.addLine(
                 figure.nodes.first(),
                 figure.nodes.last()
             )
         }
-    }
-
-    // TODO Перетаскивание линии с прикреплёнными точками через обработку State.ON_LINE
-    fun onTouchUp(touchX: Float, touchY: Float) {
-        when (mode) {
-            Mode.ADD_MOVE_FIN -> {
-                when (state) {
-                    State.ON_CANVAS -> {
-                        figure.addNode(Node(touchX, touchY))
-                        if (figure.nodes.size > 1)
-                            figure.addLine(
-                                figure.nodes[figure.nodes.size - 2],
-                                figure.nodes.last()
-                            )
-                    }
-                    State.ON_POINT -> if (numOfCall < 2)
-                        for (node in figure.nodes)
-                            if (node.inRadius(touchX, touchY)) {
-                                figure.addLine(figure.nodes.last(), node)
-                                break
-                            }
-                }
-            }
-            Mode.DEL_MOVE -> figure.delNode(touchX, touchY)
-            Mode.MARK_FIND -> figure.find = figure.getInRadius(touchX, touchY) ?: figure.find
-            Mode.SET_VAlUE -> { /*setValue(touchX, touchY)*/
-            }
-        }
-
-        numOfCall = 0
-        state = State.ON_CANVAS
-        figure.stopAllNode()
     }
 }
