@@ -31,12 +31,12 @@ class Node(
         this.y = y
     }
 
-    fun inRadius(x: Float, y: Float): Boolean {
-        val xBool = this.x - 0.05f < x && x < this.x + 0.05f
+    fun inRadius(px: Float, py: Float): Boolean {
 
-        val yBool = this.y - 0.05f < y && y < this.y + 0.05f
+        val xInRadius = x - 0.06f < px && px < x + 0.06f
+        val yInRadius = y - 0.06f < py && py < y + 0.06f
 
-        return xBool && yBool
+        return (xInRadius && yInRadius)
     }
 
     // TODO Переписать систему перетаскивания точек
