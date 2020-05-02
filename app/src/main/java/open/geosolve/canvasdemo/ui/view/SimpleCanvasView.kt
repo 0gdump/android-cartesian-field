@@ -104,19 +104,19 @@ open class SimpleCanvasView : View {
 
     //region Cartesian drawing
 
-    private fun getAbsoluteX(x: Float) = width / 2f + x * gridStep
-    private fun getAbsoluteY(y: Float) = height / 2f - y * gridStep
+    private fun toAbsoluteX(x: Float) = width / 2f + x * gridStep
+    private fun toAbsoluteY(y: Float) = height / 2f - y * gridStep
 
-    private fun getAbsoluteZeroX() = getAbsoluteX(0f)
-    private fun getAbsoluteZeroY() = getAbsoluteY(0f)
+    private fun getAbsoluteZeroX() = toAbsoluteX(0f)
+    private fun getAbsoluteZeroY() = toAbsoluteY(0f)
 
     private fun isXonScreen(x: Float): Boolean {
-        val ax = getAbsoluteX(x)
+        val ax = toAbsoluteX(x)
         return width > ax && ax > 0
     }
 
     private fun isYonScreen(y: Float): Boolean {
-        val ay = getAbsoluteY(y)
+        val ay = toAbsoluteY(y)
         return height > ay && ay > 0
     }
 
@@ -128,8 +128,8 @@ open class SimpleCanvasView : View {
         p: Paint
     ) {
         c.drawCircle(
-            getAbsoluteX(x),
-            getAbsoluteY(y),
+            toAbsoluteX(x),
+            toAbsoluteY(y),
             r,
             p
         )
@@ -144,10 +144,10 @@ open class SimpleCanvasView : View {
         p: Paint
     ) {
         c.drawLine(
-            getAbsoluteX(x1),
-            getAbsoluteY(y1),
-            getAbsoluteX(x2),
-            getAbsoluteY(y2),
+            toAbsoluteX(x1),
+            toAbsoluteY(y1),
+            toAbsoluteX(x2),
+            toAbsoluteY(y2),
             p
         )
     }
@@ -158,9 +158,9 @@ open class SimpleCanvasView : View {
         p: Paint
     ) {
         c.drawLine(
-            getAbsoluteX(x),
+            toAbsoluteX(x),
             0f,
-            getAbsoluteX(x),
+            toAbsoluteX(x),
             height.toFloat(),
             p
         )
@@ -173,9 +173,9 @@ open class SimpleCanvasView : View {
     ) {
         c.drawLine(
             0f,
-            getAbsoluteY(y),
+            toAbsoluteY(y),
             width.toFloat(),
-            getAbsoluteY(y),
+            toAbsoluteY(y),
             p
         )
     }
@@ -239,8 +239,8 @@ open class SimpleCanvasView : View {
 
         c.drawText(
             t,
-            getAbsoluteX(x) - aox + safetyZone,
-            getAbsoluteY(y) + aoy + safetyZone,
+            toAbsoluteX(x) - aox + safetyZone,
+            toAbsoluteY(y) + aoy + safetyZone,
             p
         )
     }
