@@ -1,9 +1,7 @@
 package open.geosolve.canvasdemo.presentation
 
 import moxy.MvpPresenter
-import open.geosolve.canvasdemo.model.Mode
 import open.geosolve.canvasdemo.model.Node
-import open.geosolve.canvasdemo.model.State
 import open.geosolve.geosolve.repository.model.Figure
 
 class MainPresenter : MvpPresenter<MainView>() {
@@ -11,10 +9,6 @@ class MainPresenter : MvpPresenter<MainView>() {
     private val figure = Figure()
     private var figureClosed = false
     private var movedNode: Node? = null
-
-    private var mode = Mode.ADD_MOVE_FIN
-    private var state = State.ON_CANVAS
-    private var numOfCall = 0
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -38,7 +32,7 @@ class MainPresenter : MvpPresenter<MainView>() {
             }
         }
 
-        throw RuntimeException("WTF. Node not found")
+        throw RuntimeException("Node not found, but isUsed work's")
     }
 
     fun onMove(x: Float, y: Float) {

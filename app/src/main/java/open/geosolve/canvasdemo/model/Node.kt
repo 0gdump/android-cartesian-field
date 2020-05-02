@@ -38,7 +38,6 @@ class Node(
 
         return (xInRadius && yInRadius)
     }
-
     // TODO Переписать систему перетаскивания точек
     fun stopMove(): Boolean {
         return if (isMove) {
