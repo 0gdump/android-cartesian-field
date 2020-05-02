@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import open.geosolve.canvasdemo.R
 import open.geosolve.canvasdemo.model.Node
 import open.geosolve.geosolve.repository.model.Figure
+import kotlin.math.roundToInt
 
 open class SimpleCanvasView : View {
 
@@ -26,6 +27,12 @@ open class SimpleCanvasView : View {
     var scale = 1.0f
         private set
 
+    var xOffset = 0f
+        private set
+
+    var yOffset = 0f
+        private set
+
     val gridStep
         get() = 120 * scale
 
@@ -35,9 +42,10 @@ open class SimpleCanvasView : View {
     val lineThickness
         get() = 1 * scale
 
+
     //endregion
 
-    //region Options and switches
+    //region Switches
 
     private var showGrid = true
     private var showAxis = true
@@ -104,8 +112,13 @@ open class SimpleCanvasView : View {
 
     //region Cartesian drawing
 
-    private fun toAbsoluteX(x: Float) = width / 2f + x * gridStep
-    private fun toAbsoluteY(y: Float) = height / 2f - y * gridStep
+    private fun toAbsoluteX(x: Float): Float {
+        return width / 2f + x * gridStep
+    }
+
+    private fun toAbsoluteY(y: Float): Float {
+        return height / 2f - y * gridStep
+    }
 
     private fun getAbsoluteZeroX() = toAbsoluteX(0f)
     private fun getAbsoluteZeroY() = toAbsoluteY(0f)
@@ -118,6 +131,24 @@ open class SimpleCanvasView : View {
     private fun isYonScreen(y: Float): Boolean {
         val ay = toAbsoluteY(y)
         return height > ay && ay > 0
+    }
+
+    private fun getXOnScreen(): IntRange {
+        val cellsPerHalf = (width / 2 / gridStep).roundToInt()
+
+        val minX = -cellsPerHalf + xOffset.roundToInt()
+        val maxX = cellsPerHalf + xOffset.roundToInt()
+
+        return minX..maxX
+    }
+
+    private fun getYOnScreen(): IntRange {
+        val cellsPerHalf = (height / 2 / gridStep).roundToInt()
+
+        val minY = -cellsPerHalf + xOffset.roundToInt()
+        val maxY = cellsPerHalf + xOffset.roundToInt()
+
+        return minY..maxY
     }
 
     private fun drawCircle(
@@ -259,24 +290,14 @@ open class SimpleCanvasView : View {
     }
 
     private fun drawX(canvas: Canvas) {
-        var y = 0f
-        while (isYonScreen(y)) {
-
-            drawEndlessHorizontalLine(canvas, -y, paintGrid)
-            drawEndlessHorizontalLine(canvas, y, paintGrid)
-
-            y++
+        for (y in getYOnScreen()) {
+            drawEndlessHorizontalLine(canvas, y.toFloat(), paintGrid)
         }
     }
 
     private fun drawY(canvas: Canvas) {
-        var x = 0f
-        while (isXonScreen(x)) {
-
-            drawEndlessVerticalLine(canvas, -x, paintGrid)
-            drawEndlessVerticalLine(canvas, x, paintGrid)
-
-            x++
+        for (x in getXOnScreen()) {
+            drawEndlessVerticalLine(canvas, x.toFloat(), paintGrid)
         }
     }
 
@@ -441,6 +462,13 @@ open class SimpleCanvasView : View {
         this.scale = scale
 
         // TODO Update paints options
+
+        invalidate()
+    }
+
+    fun updateOffset(xOffset: Float, yOffset: Float) {
+        this.xOffset = xOffset
+        this.yOffset = yOffset
 
         invalidate()
     }
