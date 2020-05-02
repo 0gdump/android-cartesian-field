@@ -24,7 +24,7 @@ open class SimpleCanvasView : View {
 
     //region Drawing data
 
-    var scale = 1.0f
+    var scale = 3.5f
         private set
 
     var xOffset = 0f
@@ -42,6 +42,8 @@ open class SimpleCanvasView : View {
     val lineThickness
         get() = 1 * scale
 
+    val textScaledSize
+        get() = 36 * scale
 
     //endregion
 
@@ -71,7 +73,7 @@ open class SimpleCanvasView : View {
     }
 
     private val paintNotations = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 42f
+        textSize = textScaledSize
         typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
     }
 
