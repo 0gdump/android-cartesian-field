@@ -83,21 +83,10 @@ class EditableCanvasView : SimpleCanvasView {
         lastY = y
     }
 
-    private fun isMoved(x: Float, y: Float): Boolean {
-        return lastX != x || lastY != y
-    }
+    private fun isMoved(x: Float, y: Float) = lastX != x || lastY != y
 
-    private fun getXFromEvent(event: MotionEvent): Float {
-        val width = width.toFloat()
-        val cx = width / 2
-        return roundCoordinate((event.x - cx) / gridStep)
-    }
-
-    private fun getYFromEvent(event: MotionEvent): Float {
-        val height = height.toFloat()
-        val cy = height / 2
-        return roundCoordinate((cy - event.y) / gridStep)
-    }
+    private fun getXFromEvent(event: MotionEvent) = roundCoordinate(fromAbsoluteX(event.x))
+    private fun getYFromEvent(event: MotionEvent) = roundCoordinate(fromAbsoluteY(event.y))
 
     private fun roundCoordinate(coordinate: Float): Float {
 
