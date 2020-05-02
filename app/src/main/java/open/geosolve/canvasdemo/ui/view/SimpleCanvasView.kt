@@ -113,11 +113,11 @@ open class SimpleCanvasView : View {
     //region Cartesian drawing
 
     private fun toAbsoluteX(x: Float): Float {
-        return width / 2f + x * gridStep
+        return width / 2f + (x - xOffset) * gridStep
     }
 
     private fun toAbsoluteY(y: Float): Float {
-        return height / 2f - y * gridStep
+        return height / 2f - (y - yOffset) * gridStep
     }
 
     private fun getAbsoluteZeroX() = toAbsoluteX(0f)
