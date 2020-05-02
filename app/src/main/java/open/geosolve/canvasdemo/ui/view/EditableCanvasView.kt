@@ -35,14 +35,15 @@ class EditableCanvasView : SimpleCanvasView {
 
             MotionEvent.ACTION_MOVE -> {
                 if (isMoved(mx, my)) {
-                    savePosition(mx, my)
 
                     if (!isMoved) {
-                        isFigureMoved = callback?.isUsed(mx, my) ?: false
+                        isFigureMoved = callback?.isUsed(lastX, lastY) ?: false
                         callScrollStartCallback(lastX, lastY)
                     } else {
                         callScrollCallback(mx, my)
                     }
+
+                    savePosition(mx, my)
 
                     isMoved = true
                 }
