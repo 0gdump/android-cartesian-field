@@ -112,26 +112,14 @@ open class SimpleCanvasView : View {
 
     //region Cartesian drawing
 
-    private fun toAbsoluteX(x: Float): Float {
-        return width / 2f + (x - xOffset) * gridStep
-    }
+    protected fun fromAbsoluteX(x: Float) = (x - width / 2f) / gridStep + xOffset
+    protected fun fromAbsoluteY(y: Float) = (height / 2f - y) / gridStep + yOffset
 
-    private fun toAbsoluteY(y: Float): Float {
-        return height / 2f - (y - yOffset) * gridStep
-    }
+    private fun toAbsoluteX(x: Float) = width / 2f + (x - xOffset) * gridStep
+    private fun toAbsoluteY(y: Float) = height / 2f - (y - yOffset) * gridStep
 
-    private fun getAbsoluteZeroX() = toAbsoluteX(0f)
-    private fun getAbsoluteZeroY() = toAbsoluteY(0f)
-
-    private fun isXonScreen(x: Float): Boolean {
-        val ax = toAbsoluteX(x)
-        return width > ax && ax > 0
-    }
-
-    private fun isYonScreen(y: Float): Boolean {
-        val ay = toAbsoluteY(y)
-        return height > ay && ay > 0
-    }
+    private fun isXonScreen(x: Float) = toAbsoluteX(x).roundToInt() in 0..width
+    private fun isYonScreen(y: Float) = toAbsoluteY(y).roundToInt() in 0..height
 
     private fun getXOnScreen(): IntRange {
         val cellsPerHalf = (width / 2 / gridStep).roundToInt()
