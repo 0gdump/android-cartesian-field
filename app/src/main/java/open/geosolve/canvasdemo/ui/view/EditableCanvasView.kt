@@ -2,7 +2,6 @@ package open.geosolve.canvasdemo.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import kotlin.math.abs
 
@@ -99,8 +98,8 @@ class EditableCanvasView : SimpleCanvasView {
     }
 
     private fun onScrollFinished(x: Float, y: Float) {
-        xOffset -= x - startX
-        yOffset -= x - startX
+        xOffset += -(x - startX)
+        yOffset -= -(x - startX)
     }
 
     private fun savePosition(x: Float, y: Float) {
