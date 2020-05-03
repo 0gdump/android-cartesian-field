@@ -24,14 +24,14 @@ open class SimpleCanvasView : View {
 
     //region Drawing data
 
-    var scale = 3.5f
+    var scale = 1f
         private set
 
     var xOffset = 0f
-        private set
+        protected set
 
     var yOffset = 0f
-        private set
+        protected set
 
     val gridStep
         get() = 120 * scale
@@ -208,7 +208,7 @@ open class SimpleCanvasView : View {
         y: Float,
         p: Paint,
         a: TextAnchor = TextAnchor.MiddleCenter,
-        safetyZone: Float = 0f
+        safetyZone: Float = 0f  // TODO FIX THAT
     ) {
         val bounds = Rect()
         p.getTextBounds(t, 0, t.length, bounds)

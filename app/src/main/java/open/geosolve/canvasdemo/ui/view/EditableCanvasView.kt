@@ -2,6 +2,7 @@ package open.geosolve.canvasdemo.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import kotlin.math.abs
 
@@ -49,10 +50,10 @@ class EditableCanvasView : SimpleCanvasView {
             }
 
             MotionEvent.ACTION_UP -> {
-                if (isMoved && isFigureMoved) {
-                    callback?.onMoveFinished(mx, my)
-                } else {
-                    callback?.onTouch(mx, my)
+                when {
+                    isMoved && isFigureMoved -> callback?.onMoveFinished(mx, my)
+                    isMoved -> onScrollFinished(mx, my)
+                    else -> callback?.onTouch(mx, my)
                 }
 
                 isMoved = false
@@ -69,13 +70,37 @@ class EditableCanvasView : SimpleCanvasView {
     private fun callScrollStartCallback(x: Float, y: Float) {
         if (isFigureMoved) {
             callback?.onMoveStart(x, y)
+        } else {
+            onScrollStart(x, y)
         }
     }
 
     private fun callScrollCallback(x: Float, y: Float) {
         if (isFigureMoved) {
             callback?.onMove(x, y)
+        } else {
+            onScroll(x, y)
         }
+    }
+
+    var startX = 0f
+    var startY = 0f
+    var startOX = 0f
+    var startOY = 0f
+
+    private fun onScrollStart(x: Float, y: Float) {
+        startX = x
+        startY = y
+        startOX = xOffset
+        startOY = yOffset
+    }
+
+    private fun onScroll(x: Float, y: Float) {
+    }
+
+    private fun onScrollFinished(x: Float, y: Float) {
+        xOffset -= x - startX
+        yOffset -= x - startX
     }
 
     private fun savePosition(x: Float, y: Float) {
