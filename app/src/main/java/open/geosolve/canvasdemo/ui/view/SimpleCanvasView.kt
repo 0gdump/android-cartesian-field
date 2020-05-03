@@ -390,24 +390,29 @@ open class SimpleCanvasView : View {
 
         attachedFigure!!.nodes.forEach { node ->
             drawNode(canvas, node)
-            drawAngleDecoration(canvas, node)
+            drawNodesName(canvas)
+        }
+    }
+
+    private fun drawNodesName(canvas: Canvas) {
+
+        if (attachedFigure == null) return
+
+        for (node in attachedFigure!!.nodes) {
+            drawText(
+                node.char.toString(),
+                canvas,
+                node.x,
+                node.y,
+                paintNotations,
+                TextAnchor.TopLeft,
+                pointRadius
+            )
         }
     }
 
     private fun drawNode(canvas: Canvas, node: Node) {
         drawCircle(canvas, node.x, node.y, pointRadius, paintNode)
-    }
-
-    private fun drawAngleDecoration(canvas: Canvas, node: Node) {
-        if (node.innerAngle == null) return
-
-        drawText(
-            node.innerAngle.toString(),
-            canvas,
-            node.x + 50,
-            node.y + 50,
-            paintAngle
-        )
     }
 
     //endregion

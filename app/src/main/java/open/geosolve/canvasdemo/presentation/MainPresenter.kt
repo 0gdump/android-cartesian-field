@@ -71,5 +71,9 @@ class MainPresenter : MvpPresenter<MainView>() {
                 figure.nodes.last()
             )
         }
+
+        val charRange = ('A'..'Z').toList()
+        for (i in figure.nodes.indices)
+            figure.nodes[i].char = charRange[i]
     }
 }

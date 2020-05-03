@@ -1,5 +1,7 @@
 package open.geosolve.canvasdemo.model
 
+import kotlin.properties.Delegates
+
 class Node(
     var x: Float,
     var y: Float
@@ -8,23 +10,7 @@ class Node(
     var isMove = false
     val neighborLines: MutableList<Line> = ArrayList()
 
-    var outerAngle: Float? = null
-        private set
-
-    var innerAngle: Float? = null
-        private set
-
-    // TODO Защита от дурака
-    fun setInnerAngle(value: Float?) {
-        innerAngle = value
-        outerAngle = if (value != null) 360f - value else null
-    }
-
-    // TODO Защита от дурака
-    fun setOuterAngle(value: Float?) {
-        outerAngle = value
-        innerAngle = if (value != null) 360f - value else null
-    }
+    var char by Delegates.notNull<Char>()
 
     fun moveNode(x: Float, y: Float) {
         this.x = x
