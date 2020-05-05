@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <open.geosolve.canvasdemo.ui.view.EditableCanvasView
-        android:id="@+id/canvas"
+    <open.v0gdump.field_demo.ui.FigureInteractiveFieldView
+        android:id="@+id/field"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

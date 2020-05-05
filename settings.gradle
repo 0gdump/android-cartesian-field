@@ -1,2 +1,3 @@
 rootProject.name='GeoSolveCanvas'
 include ':app'
+include ':field'
