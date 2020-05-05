@@ -51,7 +51,7 @@ class EditableCanvasView : SimpleCanvasView {
             MotionEvent.ACTION_UP -> {
                 when {
                     isMoved && isFigureMoved -> callback?.onMoveFinished(mx, my)
-                    isMoved -> onScrollFinished(mx, my)
+                    //isMoved -> onScrollFinished(mx, my)
                     else -> callback?.onTouch(mx, my)
                 }
 
@@ -69,17 +69,19 @@ class EditableCanvasView : SimpleCanvasView {
     private fun callScrollStartCallback(x: Float, y: Float) {
         if (isFigureMoved) {
             callback?.onMoveStart(x, y)
-        } else {
-            onScrollStart(x, y)
         }
+        //else {
+        //    onScrollStart(x, y)
+        //}
     }
 
     private fun callScrollCallback(x: Float, y: Float) {
         if (isFigureMoved) {
             callback?.onMove(x, y)
-        } else {
-            onScroll(x, y)
         }
+        //else {
+        //    onScroll(x, y)
+        //}
     }
 
     var startX = 0f
