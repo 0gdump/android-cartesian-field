@@ -238,13 +238,13 @@ abstract class BaseFieldView : View {
 
     protected fun drawGrid(canvas: Canvas) {
 
-        if (showAxis) {
-            drawBaselines(canvas)
-        }
-
         if (showGrid) {
             drawAxesX(canvas)
             drawAxesY(canvas)
+        }
+
+        if (showAxis) {
+            drawBaselines(canvas)
         }
     }
 
