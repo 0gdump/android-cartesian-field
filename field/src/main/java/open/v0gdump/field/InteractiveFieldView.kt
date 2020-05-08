@@ -3,9 +3,14 @@ package open.v0gdump.field
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import kotlin.math.abs
 
-abstract class InteractiveFieldView : BaseFieldView {
+abstract class InteractiveFieldView :
+    BaseFieldView,
+    ScaleGestureDetector.OnScaleGestureListener {
+
+    private val scaleGestureDetector = ScaleGestureDetector(context, this)
 
     private var lastX: Float = Float.NaN
     private var lastY: Float = Float.NaN
@@ -23,7 +28,21 @@ abstract class InteractiveFieldView : BaseFieldView {
         defStyleAttr
     )
 
+    override fun onScaleBegin(detector: ScaleGestureDetector?) = true
+
+    override fun onScale(detector: ScaleGestureDetector?): Boolean {
+        scale *= detector!!.scaleFactor
+        invalidate()
+        return true
+    }
+
+    override fun onScaleEnd(detector: ScaleGestureDetector?) {}
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
+
+        scaleGestureDetector.onTouchEvent(event)
+
+        if (scaleGestureDetector.isInProgress) return true
 
         val mx = getXFromEvent(event)
         val my = getYFromEvent(event)
