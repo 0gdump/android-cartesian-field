@@ -6,11 +6,29 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import kotlin.math.abs
 
-abstract class InteractiveFieldView :
-    BaseFieldView,
-    ScaleGestureDetector.OnScaleGestureListener {
+abstract class InteractiveFieldView : BaseFieldView {
 
-    private val scaleGestureDetector = ScaleGestureDetector(context, this)
+    private var scaleEnd = true
+    private val scaleGestureDetector = ScaleGestureDetector(
+        context,
+        object : ScaleGestureDetector.OnScaleGestureListener {
+
+            override fun onScaleBegin(detector: ScaleGestureDetector?): Boolean {
+                /* Do nothing */
+                return true
+            }
+
+            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+                scale *= detector!!.scaleFactor
+                invalidate()
+                return true
+            }
+
+            override fun onScaleEnd(detector: ScaleGestureDetector?) {
+                /* Do nothing */
+            }
+        }
+    )
 
     private var lastX: Float = Float.NaN
     private var lastY: Float = Float.NaN
@@ -28,21 +46,17 @@ abstract class InteractiveFieldView :
         defStyleAttr
     )
 
-    override fun onScaleBegin(detector: ScaleGestureDetector?) = true
-
-    override fun onScale(detector: ScaleGestureDetector?): Boolean {
-        scale *= detector!!.scaleFactor
-        invalidate()
-        return true
-    }
-
-    override fun onScaleEnd(detector: ScaleGestureDetector?) {}
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
         scaleGestureDetector.onTouchEvent(event)
 
-        if (scaleGestureDetector.isInProgress) return true
+        if (scaleGestureDetector.isInProgress) {
+            scaleEnd = false
+            return true
+        } else if (!scaleEnd && event.action == MotionEvent.ACTION_UP) {
+            scaleEnd = true
+            return true
+        }
 
         val mx = getXFromEvent(event)
         val my = getYFromEvent(event)
