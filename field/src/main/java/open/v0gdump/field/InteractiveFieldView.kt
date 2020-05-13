@@ -2,39 +2,12 @@ package open.v0gdump.field
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import kotlin.math.abs
 
 abstract class InteractiveFieldView : BaseFieldView {
-
-    private var scaleEnd = true
-    private val scaleGestureDetector = ScaleGestureDetector(
-        context,
-        object : ScaleGestureDetector.OnScaleGestureListener {
-
-            override fun onScaleBegin(detector: ScaleGestureDetector?): Boolean {
-                /* Do nothing */
-                return true
-            }
-
-            override fun onScale(detector: ScaleGestureDetector?): Boolean {
-                scale *= detector!!.scaleFactor
-                invalidate()
-                return true
-            }
-
-            override fun onScaleEnd(detector: ScaleGestureDetector?) {
-                /* Do nothing */
-            }
-        }
-    )
-
-    private var lastX: Float = Float.NaN
-    private var lastY: Float = Float.NaN
-
-    private var isMoved = false
-    private var isContentMoved = false
 
     var callback: InteractiveFieldCallback? = null
 
@@ -48,8 +21,13 @@ abstract class InteractiveFieldView : BaseFieldView {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
+        // All logic inside listeners!
+
+        // Handle scale
         scaleGestureDetector.onTouchEvent(event)
 
+        // Scaling  can be considered complete even when the fingers are very close together.
+        // Handles the end of zooming only after raising fingers
         if (scaleGestureDetector.isInProgress) {
             scaleEnd = false
             return true
@@ -58,53 +36,157 @@ abstract class InteractiveFieldView : BaseFieldView {
             return true
         }
 
-        val mx = getXFromEvent(event)
-        val my = getYFromEvent(event)
+        // Handle other gestures
+        gestureDetector.onTouchEvent(event)
 
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                savePosition(mx, my)
-            }
+        // Handle touch up
+        if (event.action == MotionEvent.ACTION_UP)
+            handleScrollUp(event)
 
-            MotionEvent.ACTION_MOVE -> {
-                if (isMoved(mx, my)) {
-
-                    if (!isMoved) {
-                        isContentMoved = callback?.isUsedByContent(lastX, lastY) ?: false
-                        if (isContentMoved) callback?.onMoveStart(lastX, lastY)
-                    } else {
-                        if (isContentMoved) callback?.onMove(mx, my)
-                    }
-
-                    savePosition(mx, my)
-                    isMoved = true
-                }
-            }
-
-            MotionEvent.ACTION_UP -> {
-                if (isMoved && isContentMoved) {
-                    callback?.onMoveFinished(mx, my)
-                } else {
-                    callback?.onTouch(mx, my)
-                }
-
-                isMoved = false
-                isContentMoved = false
-                lastX = Float.NaN
-                lastY = Float.NaN
-            }
-        }
-
-        invalidate()
         return true
     }
 
-    private fun savePosition(x: Float, y: Float) {
-        lastX = x
-        lastY = y
+    private fun handleScrollUp(event: MotionEvent) {
+
+        val mx = getXFromEvent(event)
+        val my = getYFromEvent(event)
+
+        if (isMoved && isContentMoved)
+            callback?.onMoveFinished(mx, my)
+
+        isMoved = false
+        isContentMoved = false
     }
 
-    private fun isMoved(x: Float, y: Float) = lastX != x || lastY != y
+    //region Scroll
+
+    private var scaleEnd = true
+    private val scaleGestureDetector = ScaleGestureDetector(
+        context,
+        object : ScaleGestureDetector.OnScaleGestureListener {
+
+            /* Do nothing */
+            override fun onScaleBegin(detector: ScaleGestureDetector?) = true
+
+            override fun onScale(detector: ScaleGestureDetector?): Boolean {
+                scale(
+                    detector?.scaleFactor ?: throw RuntimeException("ScaleGestureDetector is null")
+                )
+                return true
+            }
+
+            /* Do nothing. Scaling end is captured in onTouchEvent */
+            override fun onScaleEnd(detector: ScaleGestureDetector?) {}
+        }
+    )
+
+    private fun scale(scaleFactor: Float) {
+        scale *= scaleFactor
+        invalidate()
+    }
+
+    //endregion
+
+    //region Gesture detector
+
+    private var isMoved = false
+    private var isContentMoved = false
+
+    private val gestureDetector = GestureDetector(
+        context,
+        object : GestureDetector.OnGestureListener {
+
+            /* Do nothing */
+            override fun onShowPress(e: MotionEvent?) {}
+
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                onSingleTap(e ?: throw RuntimeException("MotionEvent is null"))
+                return true
+            }
+
+            /* Do nothing */
+            override fun onDown(e: MotionEvent?) = true
+
+            /* Todo */
+            override fun onFling(
+                e1: MotionEvent?,
+                e2: MotionEvent?,
+                velocityX: Float,
+                velocityY: Float
+            ) = true
+
+            override fun onScroll(
+                e1: MotionEvent?,
+                e2: MotionEvent?,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
+                check(e1 != null && e2 != null) { "MotionEvent's can't be null" }
+                this@InteractiveFieldView.onScroll(e1, e2, distanceX, distanceY)
+                return true
+            }
+
+            override fun onLongPress(e: MotionEvent?) {}
+        }
+    )
+
+    private fun onSingleTap(event: MotionEvent) {
+
+        val mx = getXFromEvent(event)
+        val my = getYFromEvent(event)
+
+        callback?.onTouch(mx, my)
+        invalidate()
+    }
+
+    private fun onScroll(
+        initialTouchEvent: MotionEvent,
+        currentTouchEvent: MotionEvent,
+        distanceX: Float,
+        distanceY: Float
+    ) {
+
+        if (!isContentMoved && isMoved) {
+            scrollField(distanceX, distanceY)
+        } else if (!isMoved && !isContentMoved) {
+            onFirstScroll(initialTouchEvent)
+        } else {
+            onScroll(currentTouchEvent)
+        }
+
+        invalidate()
+    }
+
+    private fun onFirstScroll(initialTouchEvent: MotionEvent) {
+
+        val fmx = getXFromEvent(initialTouchEvent)
+        val fmy = getYFromEvent(initialTouchEvent)
+
+        isContentMoved = callback?.isUsedByContent(fmx, fmy) ?: false
+
+        if (isContentMoved) {
+            callback?.onMoveStart(fmx, fmy)
+        }
+
+        isMoved = true
+    }
+
+    private fun onScroll(currentTouchEvent: MotionEvent) {
+
+        val mx = getXFromEvent(currentTouchEvent)
+        val my = getYFromEvent(currentTouchEvent)
+
+        if (isContentMoved) {
+            callback?.onMove(mx, my)
+        }
+    }
+
+    private fun scrollField(distanceX: Float, distanceY: Float) {
+        xOffset += distanceX / gridStep
+        yOffset -= distanceY / gridStep
+    }
+
+    //endregion
 
     private fun getXFromEvent(event: MotionEvent) = roundCoordinate(fromAbsoluteX(event.x))
     private fun getYFromEvent(event: MotionEvent) = roundCoordinate(fromAbsoluteY(event.y))
