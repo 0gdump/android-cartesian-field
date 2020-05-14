@@ -108,7 +108,7 @@ abstract class BaseFieldView : View {
         gridStep * dc.toFloat()
 
     protected fun getXOnScreen(): IntRange {
-        val cellsPerHalf = (width / 2 / gridStep).roundToInt()
+        val cellsPerHalf = (cx / gridStep).roundToInt()
 
         val minX = -cellsPerHalf + xOffset.roundToInt()
         val maxX = cellsPerHalf + xOffset.roundToInt()
@@ -117,7 +117,7 @@ abstract class BaseFieldView : View {
     }
 
     protected fun getYOnScreen(): IntRange {
-        val cellsPerHalf = (height / 2 / gridStep).roundToInt()
+        val cellsPerHalf = (cy / gridStep).roundToInt()
 
         val minY = -cellsPerHalf + yOffset.roundToInt()
         val maxY = cellsPerHalf + yOffset.roundToInt()
