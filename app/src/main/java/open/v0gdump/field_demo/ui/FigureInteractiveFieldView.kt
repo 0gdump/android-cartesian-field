@@ -15,11 +15,11 @@ class FigureInteractiveFieldView : InteractiveFieldView {
 
     //region Drawing data
 
-    val pointRadius
-        get() = 20 * scale
+    private val pointRadius
+        get() = dc(Node.RADIUS)
 
-    val lineThickness
-        get() = 1 * scale
+    private val lineThickness
+        get() = dp(2 * scale)
 
     //endregion
 

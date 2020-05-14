@@ -7,14 +7,20 @@ class Node(
     var y: Float
 ) : Element {
 
+    companion object {
+        const val RADIUS = 0.15
+    }
+
     val neighborLines: MutableList<Line> = ArrayList()
 
     var char by Delegates.notNull<Char>()
 
     fun inRadius(px: Float, py: Float): Boolean {
 
-        val xInRadius = x - 0.06f < px && px < x + 0.06f
-        val yInRadius = y - 0.06f < py && py < y + 0.06f
+        val safetyRadius = RADIUS + 0.05
+
+        val xInRadius = x - safetyRadius < px && px < x + safetyRadius
+        val yInRadius = y - safetyRadius < py && py < y + safetyRadius
 
         return (xInRadius && yInRadius)
     }
