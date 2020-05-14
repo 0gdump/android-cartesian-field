@@ -6,9 +6,9 @@ import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import open.v0gdump.field.InteractiveFieldCallback
 import open.v0gdump.field_demo.R
+import open.v0gdump.field_demo.model.Figure
 import open.v0gdump.field_demo.presentation.MainPresenter
 import open.v0gdump.field_demo.presentation.MainView
-import open.v0gdump.field_demo.model.Figure
 
 class MainActivity : MvpAppCompatActivity(), MainView {
 

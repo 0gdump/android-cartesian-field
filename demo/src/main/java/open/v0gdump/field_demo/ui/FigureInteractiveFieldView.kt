@@ -8,8 +8,8 @@ import androidx.core.content.ContextCompat
 import open.v0gdump.field.InteractiveFieldView
 import open.v0gdump.field.TextAnchor
 import open.v0gdump.field_demo.R
-import open.v0gdump.field_demo.model.Node
 import open.v0gdump.field_demo.model.Figure
+import open.v0gdump.field_demo.model.Node
 
 class FigureInteractiveFieldView : InteractiveFieldView {
 

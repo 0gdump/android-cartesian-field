@@ -1,8 +1,8 @@
 package open.v0gdump.field_demo.presentation
 
 import moxy.MvpPresenter
-import open.v0gdump.field_demo.model.Node
 import open.v0gdump.field_demo.model.Figure
+import open.v0gdump.field_demo.model.Node
 
 class MainPresenter : MvpPresenter<MainView>() {
 
