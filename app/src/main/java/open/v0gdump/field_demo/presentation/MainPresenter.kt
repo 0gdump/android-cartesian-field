@@ -2,7 +2,7 @@ package open.v0gdump.field_demo.presentation
 
 import moxy.MvpPresenter
 import open.v0gdump.field_demo.model.Node
-import open.v0gdump.geosolve.repository.model.Figure
+import open.v0gdump.field_demo.model.Figure
 
 class MainPresenter : MvpPresenter<MainView>() {
 
@@ -74,6 +74,6 @@ class MainPresenter : MvpPresenter<MainView>() {
 
         val charRange = ('A'..'Z').toList()
         for (i in figure.nodes.indices)
-            figure.nodes[i].char = charRange[i]
+            figure.nodes[i].name = charRange[i]
     }
 }

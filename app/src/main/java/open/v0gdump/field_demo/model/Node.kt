@@ -11,10 +11,10 @@ class Node(
         const val RADIUS = 0.15
     }
 
+    var name by Delegates.notNull<Char>()
+
     val neighborLines: MutableList<Line> = ArrayList()
-
-    var char by Delegates.notNull<Char>()
-
+    
     fun inRadius(px: Float, py: Float): Boolean {
 
         val safetyRadius = RADIUS + 0.05

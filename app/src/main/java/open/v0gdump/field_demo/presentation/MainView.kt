@@ -3,7 +3,7 @@ package open.v0gdump.field_demo.presentation
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
-import open.v0gdump.geosolve.repository.model.Figure
+import open.v0gdump.field_demo.model.Figure
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface MainView : MvpView {

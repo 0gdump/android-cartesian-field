@@ -9,7 +9,7 @@ import open.v0gdump.field.InteractiveFieldView
 import open.v0gdump.field.TextAnchor
 import open.v0gdump.field_demo.R
 import open.v0gdump.field_demo.model.Node
-import open.v0gdump.geosolve.repository.model.Figure
+import open.v0gdump.field_demo.model.Figure
 
 class FigureInteractiveFieldView : InteractiveFieldView {
 
@@ -101,7 +101,7 @@ class FigureInteractiveFieldView : InteractiveFieldView {
 
         for (node in attachedFigure!!.nodes) {
             drawText(
-                node.char.toString(),
+                node.name.toString(),
                 canvas,
                 node.x,
                 node.y,
