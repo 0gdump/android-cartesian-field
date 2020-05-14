@@ -17,10 +17,8 @@ class Node(
     
     fun inRadius(px: Float, py: Float): Boolean {
 
-        val safetyRadius = RADIUS + 0.05
-
-        val xInRadius = x - safetyRadius < px && px < x + safetyRadius
-        val yInRadius = y - safetyRadius < py && py < y + safetyRadius
+        val xInRadius = x - RADIUS < px && px < x + RADIUS
+        val yInRadius = y - RADIUS < py && py < y + RADIUS
 
         return (xInRadius && yInRadius)
     }
