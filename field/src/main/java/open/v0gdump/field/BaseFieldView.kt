@@ -3,6 +3,7 @@ package open.v0gdump.field
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import kotlin.math.roundToInt
 
@@ -10,6 +11,12 @@ import kotlin.math.roundToInt
 abstract class BaseFieldView : View {
 
     //region Drawing data
+
+    val cx
+        get() = width / 2f
+
+    val cy
+        get() = height / 2f
 
     var scale = 1f
         protected set
@@ -21,10 +28,10 @@ abstract class BaseFieldView : View {
         protected set
 
     val gridStep
-        get() = 120 * scale
+        get() = dp(64 * scale)
 
     val scaledTextSize
-        get() = 36 * scale
+        get() = sp(16 * scale)
 
     //endregion
 
@@ -32,7 +39,7 @@ abstract class BaseFieldView : View {
 
     protected val paintAxis = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLACK
-        strokeWidth = 4f
+        strokeWidth = dp(2 * scale)
     }
 
     protected val paintGrid = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -77,11 +84,28 @@ abstract class BaseFieldView : View {
 
     //region Helpers
 
-    protected fun fromAbsoluteX(x: Float) = (x - width / 2f) / gridStep + xOffset
-    protected fun fromAbsoluteY(y: Float) = (height / 2f - y) / gridStep + yOffset
+    protected fun fromAbsoluteX(x: Float) = (x - cx) / gridStep + xOffset
+    protected fun fromAbsoluteY(y: Float) = (cy - y) / gridStep + yOffset
 
-    protected fun toAbsoluteX(x: Float) = width / 2f + (x - xOffset) * gridStep
-    protected fun toAbsoluteY(y: Float) = height / 2f - (y - yOffset) * gridStep
+    protected fun toAbsoluteX(x: Float) = cx + (x - xOffset) * gridStep
+    protected fun toAbsoluteY(y: Float) = cy - (y - yOffset) * gridStep
+
+    protected fun <T> dp(dp: T) where T : Number =
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            resources.displayMetrics
+        )
+
+    protected fun <T> sp(sp: T) where T : Number =
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            sp.toFloat(),
+            resources.displayMetrics
+        )
+
+    protected fun <T> dc(dc: T) where T : Number =
+        gridStep * dc.toFloat()
 
     protected fun getXOnScreen(): IntRange {
         val cellsPerHalf = (width / 2 / gridStep).roundToInt()
@@ -100,7 +124,6 @@ abstract class BaseFieldView : View {
 
         return minY..maxY
     }
-
 
     protected fun isXonScreen(x: Float) = toAbsoluteX(x).roundToInt() in getXOnScreen()
     protected fun isYonScreen(y: Float) = toAbsoluteY(y).roundToInt() in getYOnScreen()
