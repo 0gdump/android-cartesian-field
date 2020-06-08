@@ -2,13 +2,13 @@ package open.v0gdump.field_demo.presentation
 
 import moxy.MvpPresenter
 import open.v0gdump.field_demo.model.Figure
-import open.v0gdump.field_demo.model.Node
+import open.v0gdump.field_demo.model.Point
 
 class MainPresenter : MvpPresenter<MainView>() {
 
     private val figure = Figure()
     private var figureClosed = false
-    private var movedNode: Node? = null
+    private var movedPoint: Point? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -16,7 +16,7 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun isUsedByContent(x: Float, y: Float): Boolean {
-        figure.nodes.forEach { node ->
+        figure.points.forEach { node ->
             if (node.inRadius(x, y)) return true
         }
 
@@ -24,9 +24,9 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun onMoveStart(x: Float, y: Float) {
-        figure.nodes.forEach { node ->
+        figure.points.forEach { node ->
             if (node.inRadius(x, y)) {
-                movedNode = node
+                movedPoint = node
                 return
             }
         }
@@ -35,19 +35,19 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun onMove(x: Float, y: Float) {
-        movedNode?.x = x
-        movedNode?.y = y
+        movedPoint?.x = x
+        movedPoint?.y = y
     }
 
     fun onMoveFinished(x: Float, y: Float) {
-        movedNode = null
+        movedPoint = null
     }
 
     fun onTouch(x: Float, y: Float) {
 
         var isCanvasTouch = true
 
-        figure.nodes.forEach { node ->
+        figure.points.forEach { node ->
             if (node.inRadius(x, y)) {
                 isCanvasTouch = false
                 return@forEach
@@ -55,25 +55,25 @@ class MainPresenter : MvpPresenter<MainView>() {
         }
 
         if (isCanvasTouch && !figureClosed) {
-            figure.addNode(Node(x, y))
+            figure.addNode(Point(x, y))
 
-            if (figure.nodes.size > 1) {
+            if (figure.points.size > 1) {
                 figure.addLine(
-                    figure.nodes[figure.nodes.size - 2],
-                    figure.nodes.last()
+                    figure.points[figure.points.size - 2],
+                    figure.points.last()
                 )
             }
         } else {
             figureClosed = true
 
             figure.addLine(
-                figure.nodes.first(),
-                figure.nodes.last()
+                figure.points.first(),
+                figure.points.last()
             )
         }
 
         val charRange = ('A'..'Z').toList()
-        for (i in figure.nodes.indices)
-            figure.nodes[i].name = charRange[i]
+        for (i in figure.points.indices)
+            figure.points[i].name = charRange[i]
     }
 }

@@ -1,14 +1,14 @@
 package open.v0gdump.field_demo.model
 
 class Line(
-    val startNode: Node,
-    val finalNode: Node
+    val startPoint: Point,
+    val finalPoint: Point
 ) : Element {
 
     init {
-        check(startNode != finalNode) { "Line constructor get the same Node" }
+        check(startPoint != finalPoint) { "Line constructor get the same Node" }
 
-        startNode.neighborLines.add(this)
-        finalNode.neighborLines.add(this)
+        startPoint.neighborLines.add(this)
+        finalPoint.neighborLines.add(this)
     }
 }

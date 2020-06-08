@@ -2,7 +2,7 @@ package open.v0gdump.field_demo.model
 
 import kotlin.properties.Delegates
 
-class Node(
+class Point(
     var x: Float,
     var y: Float
 ) : Element {

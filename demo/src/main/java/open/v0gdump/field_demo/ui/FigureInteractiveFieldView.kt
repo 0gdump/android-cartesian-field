@@ -9,14 +9,14 @@ import open.v0gdump.field.InteractiveFieldView
 import open.v0gdump.field.TextAnchor
 import open.v0gdump.field_demo.R
 import open.v0gdump.field_demo.model.Figure
-import open.v0gdump.field_demo.model.Node
+import open.v0gdump.field_demo.model.Point
 
 class FigureInteractiveFieldView : InteractiveFieldView {
 
     //region Drawing data
 
     private val pointRadius
-        get() = dc(Node.RADIUS)
+        get() = dc(Point.RADIUS)
 
     private val lineThickness
         get() = dp(2 * scale)
@@ -78,8 +78,8 @@ class FigureInteractiveFieldView : InteractiveFieldView {
         for (line in attachedFigure!!.lines) {
             drawLine(
                 canvas,
-                line.startNode.x, line.startNode.y,
-                line.finalNode.x, line.finalNode.y,
+                line.startPoint.x, line.startPoint.y,
+                line.finalPoint.x, line.finalPoint.y,
                 paintLine
             )
         }
@@ -89,7 +89,7 @@ class FigureInteractiveFieldView : InteractiveFieldView {
 
         if (attachedFigure == null) return
 
-        attachedFigure!!.nodes.forEach { node ->
+        attachedFigure!!.points.forEach { node ->
             drawNode(canvas, node)
             drawNodesName(canvas)
         }
@@ -99,7 +99,7 @@ class FigureInteractiveFieldView : InteractiveFieldView {
 
         if (attachedFigure == null) return
 
-        for (node in attachedFigure!!.nodes) {
+        for (node in attachedFigure!!.points) {
             drawText(
                 node.name.toString(),
                 canvas,
@@ -112,7 +112,7 @@ class FigureInteractiveFieldView : InteractiveFieldView {
         }
     }
 
-    private fun drawNode(canvas: Canvas, node: Node) {
-        drawCircle(canvas, node.x, node.y, pointRadius, paintNode)
+    private fun drawNode(canvas: Canvas, point: Point) {
+        drawCircle(canvas, point.x, point.y, pointRadius, paintNode)
     }
 }
