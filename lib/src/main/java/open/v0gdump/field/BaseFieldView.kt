@@ -55,15 +55,15 @@ abstract class BaseFieldView : View {
 
     //region Options and switchers
 
-    private var showGrid = true
-    private var showAxis = true
+    var showGrid = true
+    var showAxis = true
 
-    private var minScaleForNotations = 0.5f
-    private var showZeroNotation = true
-    private var showPositiveXNotations = true
-    private var showNegativeXNotations = true
-    private var showPositiveYNotations = true
-    private var showNegativeYNotations = true
+    var minScaleForNotations = 0.5f
+    var showZeroNotation = true
+    var showPositiveXNotations = true
+    var showNegativeXNotations = true
+    var showPositiveYNotations = true
+    var showNegativeYNotations = true
 
     //endregion
 
