@@ -6,7 +6,7 @@ import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import open.v0gdump.field.InteractiveFieldCallback
 import open.v0gdump.field_demo.R
-import open.v0gdump.field_demo.model.Figure
+import open.v0gdump.field_demo.model.Polygon
 import open.v0gdump.field_demo.presentation.MainPresenter
 import open.v0gdump.field_demo.presentation.MainView
 
@@ -43,8 +43,8 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         }
     }
 
-    override fun attach(figure: Figure) {
-        field.attach(figure)
+    override fun attach(polygon: Polygon) {
+        field.attach(polygon)
     }
 
     override fun redraw() {

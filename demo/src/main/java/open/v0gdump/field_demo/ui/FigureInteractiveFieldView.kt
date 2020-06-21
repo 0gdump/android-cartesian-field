@@ -8,8 +8,8 @@ import androidx.core.content.ContextCompat
 import open.v0gdump.field.InteractiveFieldView
 import open.v0gdump.field.TextAnchor
 import open.v0gdump.field_demo.R
-import open.v0gdump.field_demo.model.Figure
 import open.v0gdump.field_demo.model.Point
+import open.v0gdump.field_demo.model.Polygon
 
 class FigureInteractiveFieldView : InteractiveFieldView {
 
@@ -35,19 +35,14 @@ class FigureInteractiveFieldView : InteractiveFieldView {
         strokeWidth = lineThickness
     }
 
-    private val paintAngle = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = ContextCompat.getColor(context, R.color.color_angle)
-        textSize = lineThickness
-    }
-
     //endregion
 
-    //region Figure
+    //region Polygon
 
-    private var attachedFigure: Figure? = null
+    private var attachedPolygon: Polygon? = null
 
-    fun attach(figure: Figure?) {
-        attachedFigure = figure
+    fun attach(polygon: Polygon?) {
+        attachedPolygon = polygon
     }
 
     //endregion
@@ -63,7 +58,7 @@ class FigureInteractiveFieldView : InteractiveFieldView {
     override fun onDraw(canvas: Canvas) {
         super.drawGrid(canvas)
 
-        if (attachedFigure != null) {
+        if (attachedPolygon != null) {
             drawLines(canvas)
             drawNodes(canvas)
         }
@@ -73,13 +68,13 @@ class FigureInteractiveFieldView : InteractiveFieldView {
 
     private fun drawLines(canvas: Canvas) {
 
-        if (attachedFigure == null) return
+        if (attachedPolygon == null) return
 
-        for (line in attachedFigure!!.lines) {
+        for (line in attachedPolygon!!.lines) {
             drawLine(
                 canvas,
-                line.startPoint.x, line.startPoint.y,
-                line.finalPoint.x, line.finalPoint.y,
+                line.first.x, line.first.y,
+                line.second.x, line.second.y,
                 paintLine
             )
         }
@@ -87,9 +82,9 @@ class FigureInteractiveFieldView : InteractiveFieldView {
 
     private fun drawNodes(canvas: Canvas) {
 
-        if (attachedFigure == null) return
+        if (attachedPolygon == null) return
 
-        attachedFigure!!.points.forEach { node ->
+        attachedPolygon!!.points.forEach { node ->
             drawNode(canvas, node)
             drawNodesName(canvas)
         }
@@ -97,9 +92,9 @@ class FigureInteractiveFieldView : InteractiveFieldView {
 
     private fun drawNodesName(canvas: Canvas) {
 
-        if (attachedFigure == null) return
+        if (attachedPolygon == null) return
 
-        for (node in attachedFigure!!.points) {
+        for (node in attachedPolygon!!.points) {
             drawText(
                 node.name.toString(),
                 canvas,

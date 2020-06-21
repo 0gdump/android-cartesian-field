@@ -1,20 +1,15 @@
 package open.v0gdump.field_demo.model
 
-import kotlin.properties.Delegates
-
-class Point(
+data class Point(
     var x: Float,
-    var y: Float
-) : Element {
+    var y: Float,
+    var name: Char
+) {
 
     companion object {
         const val RADIUS = 0.15
     }
 
-    var name by Delegates.notNull<Char>()
-
-    val neighborLines: MutableList<Line> = ArrayList()
-    
     fun inRadius(px: Float, py: Float): Boolean {
 
         val xInRadius = x - RADIUS < px && px < x + RADIUS

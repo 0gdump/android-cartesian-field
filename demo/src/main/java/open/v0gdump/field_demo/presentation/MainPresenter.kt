@@ -1,37 +1,38 @@
 package open.v0gdump.field_demo.presentation
 
 import moxy.MvpPresenter
-import open.v0gdump.field_demo.model.Figure
 import open.v0gdump.field_demo.model.Point
+import open.v0gdump.field_demo.model.Polygon
 
 class MainPresenter : MvpPresenter<MainView>() {
 
-    private val figure = Figure()
-    private var figureClosed = false
+    private val polygon = Polygon()
     private var movedPoint: Point? = null
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.attach(figure)
+        viewState.attach(polygon)
     }
 
     fun isUsedByContent(x: Float, y: Float): Boolean {
-        figure.points.forEach { node ->
-            if (node.inRadius(x, y)) return true
+        polygon.points.forEach { node ->
+            if (node.inRadius(x, y)) {
+                return true
+            }
         }
 
         return false
     }
 
     fun onMoveStart(x: Float, y: Float) {
-        figure.points.forEach { node ->
+        polygon.points.forEach { node ->
             if (node.inRadius(x, y)) {
                 movedPoint = node
                 return
             }
         }
 
-        throw RuntimeException("Node not found, but isUsed work's")
+        throw RuntimeException("Point not found, but isUsedByContent work out")
     }
 
     fun onMove(x: Float, y: Float) {
@@ -44,32 +45,18 @@ class MainPresenter : MvpPresenter<MainView>() {
     }
 
     fun onTouchContent(x: Float, y: Float) {
-        figureClosed = true
-
-        figure.addLine(
-            figure.points.first(),
-            figure.points.last()
-        )
+        if (!polygon.isClosed) {
+            polygon.close()
+        }
     }
 
     fun onTouchField(x: Float, y: Float) {
-        if (!figureClosed) {
-
-            figure.addNode(Point(x, y))
-
-            if (figure.points.size > 1) {
-                figure.addLine(
-                    figure.points[figure.points.size - 2],
-                    figure.points.last()
-                )
-            }
+        if (!polygon.isClosed) {
+            polygon.appendPoint(x, y)
         }
     }
 
     fun onAnyTouch(x: Float, y: Float) {
-        val charRange = ('A'..'Z').toList()
-        for (i in figure.points.indices) {
-            figure.points[i].name = charRange[i]
-        }
+        // Unused
     }
 }
