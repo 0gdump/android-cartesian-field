@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BaseFieldView">
+        <attr name="show_grid" format="boolean" />
+        <attr name="show_axis" format="boolean" />
+
+        <attr name="min_scale_for_notation" format="float" />
+        <attr name="show_zero_notation" format="boolean" />
+        <attr name="show_positive_x_notations" format="boolean" />
+        <attr name="show_negative_x_notations" format="boolean" />
+        <attr name="show_positive_y_notations" format="boolean" />
+        <attr name="show_negative_y_notations" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="InteractiveFieldView">
+        <attr name="is_sticking_points" format="boolean" />
+    </declare-styleable>
+</resources>

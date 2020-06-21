@@ -19,7 +19,16 @@ abstract class InteractiveFieldView : BaseFieldView {
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.InteractiveFieldView)
+
+        isStickingPoints = a.getBoolean(
+            R.styleable.InteractiveFieldView_is_sticking_points,
+            true
+        )
+
+        a.recycle()
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
 

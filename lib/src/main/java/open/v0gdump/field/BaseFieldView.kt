@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.View
 import kotlin.math.roundToInt
 
+
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class BaseFieldView : View {
 
@@ -73,7 +74,27 @@ abstract class BaseFieldView : View {
         context,
         attrs,
         defStyleAttr
-    )
+    ) {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.BaseFieldView)
+
+        showGrid = a.getBoolean(R.styleable.BaseFieldView_show_grid, true)
+        showAxis = a.getBoolean(R.styleable.BaseFieldView_show_axis, true)
+
+        minScaleForNotations =
+            a.getFloat(R.styleable.BaseFieldView_min_scale_for_notation, 0.5f)
+        showZeroNotation =
+            a.getBoolean(R.styleable.BaseFieldView_show_zero_notation, true)
+        showPositiveXNotations =
+            a.getBoolean(R.styleable.BaseFieldView_show_positive_x_notations, true)
+        showNegativeXNotations =
+            a.getBoolean(R.styleable.BaseFieldView_show_negative_x_notations, true)
+        showPositiveYNotations =
+            a.getBoolean(R.styleable.BaseFieldView_show_positive_y_notations, true)
+        showNegativeYNotations =
+            a.getBoolean(R.styleable.BaseFieldView_show_negative_y_notations, true)
+
+        a.recycle()
+    }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
