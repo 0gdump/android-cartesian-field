@@ -20,7 +20,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
 
         field.callback = object : InteractiveFieldCallback {
 
-            override fun isUsedByContent(x: Float, y: Float): Boolean =
+            override fun isBelongToContent(x: Float, y: Float): Boolean =
                 presenter.isUsedByContent(x, y)
 
             override fun onMoveStart(x: Float, y: Float) =
@@ -32,8 +32,14 @@ class MainActivity : MvpAppCompatActivity(), MainView {
             override fun onMoveFinished(x: Float, y: Float) =
                 presenter.onMoveFinished(x, y)
 
-            override fun onTouch(x: Float, y: Float) =
-                presenter.onTouch(x, y)
+            override fun onTouchContent(x: Float, y: Float) =
+                presenter.onTouchContent(x, y)
+
+            override fun onTouchField(x: Float, y: Float) =
+                presenter.onTouchField(x, y)
+
+            override fun onAnyTouch(x: Float, y: Float) =
+                presenter.onAnyTouch(x, y)
         }
     }
 

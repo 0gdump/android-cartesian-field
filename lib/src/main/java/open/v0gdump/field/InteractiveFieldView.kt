@@ -135,7 +135,14 @@ abstract class InteractiveFieldView : BaseFieldView {
         val mx = getXFromEvent(event)
         val my = getYFromEvent(event)
 
-        callback?.onTouch(mx, my)
+        val isTouchContent = callback?.isBelongToContent(mx, my) ?: false
+        if (isTouchContent) {
+            callback?.onTouchContent(mx, my)
+        } else {
+            callback?.onTouchField(mx, my)
+        }
+        callback?.onAnyTouch(mx, my)
+
         invalidate()
     }
 
@@ -162,7 +169,7 @@ abstract class InteractiveFieldView : BaseFieldView {
         val fmx = getXFromEvent(initialTouchEvent)
         val fmy = getYFromEvent(initialTouchEvent)
 
-        isContentMoved = callback?.isUsedByContent(fmx, fmy) ?: false
+        isContentMoved = callback?.isBelongToContent(fmx, fmy) ?: false
 
         if (isContentMoved) {
             callback?.onMoveStart(fmx, fmy)
@@ -181,12 +188,12 @@ abstract class InteractiveFieldView : BaseFieldView {
         }
     }
 
+    //endregion
+
     private fun scrollField(distanceX: Float, distanceY: Float) {
         xOffset += distanceX / gridStep
         yOffset -= distanceY / gridStep
     }
-
-    //endregion
 
     private fun getXFromEvent(event: MotionEvent) = roundCoordinate(fromAbsoluteX(event.x))
     private fun getYFromEvent(event: MotionEvent) = roundCoordinate(fromAbsoluteY(event.y))

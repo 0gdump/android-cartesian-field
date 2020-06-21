@@ -43,18 +43,18 @@ class MainPresenter : MvpPresenter<MainView>() {
         movedPoint = null
     }
 
-    fun onTouch(x: Float, y: Float) {
+    fun onTouchContent(x: Float, y: Float) {
+        figureClosed = true
 
-        var isCanvasTouch = true
+        figure.addLine(
+            figure.points.first(),
+            figure.points.last()
+        )
+    }
 
-        figure.points.forEach { node ->
-            if (node.inRadius(x, y)) {
-                isCanvasTouch = false
-                return@forEach
-            }
-        }
+    fun onTouchField(x: Float, y: Float) {
+        if (!figureClosed) {
 
-        if (isCanvasTouch && !figureClosed) {
             figure.addNode(Point(x, y))
 
             if (figure.points.size > 1) {
@@ -63,17 +63,13 @@ class MainPresenter : MvpPresenter<MainView>() {
                     figure.points.last()
                 )
             }
-        } else {
-            figureClosed = true
-
-            figure.addLine(
-                figure.points.first(),
-                figure.points.last()
-            )
         }
+    }
 
+    fun onAnyTouch(x: Float, y: Float) {
         val charRange = ('A'..'Z').toList()
-        for (i in figure.points.indices)
+        for (i in figure.points.indices) {
             figure.points[i].name = charRange[i]
+        }
     }
 }
