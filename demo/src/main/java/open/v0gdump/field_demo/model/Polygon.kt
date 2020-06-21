@@ -21,7 +21,7 @@ class Polygon {
                 val firstPoint = _points.first()
                 val secondPoint = _points.last()
 
-                (lastLine.first == secondPoint && lastLine.second == firstPoint)
+                (lastLine.first == firstPoint && lastLine.second == secondPoint)
             }
         }
 
