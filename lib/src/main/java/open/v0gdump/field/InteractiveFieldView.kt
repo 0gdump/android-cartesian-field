@@ -11,6 +11,8 @@ abstract class InteractiveFieldView : BaseFieldView {
 
     var callback: InteractiveFieldCallback? = null
 
+    var isStickingPoints = false
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -199,6 +201,8 @@ abstract class InteractiveFieldView : BaseFieldView {
     private fun getYFromEvent(event: MotionEvent) = roundCoordinate(fromAbsoluteY(event.y))
 
     private fun roundCoordinate(coordinate: Float): Float {
+
+        if (!isStickingPoints) return coordinate
 
         val decimalPart = abs(coordinate % 1)
 
